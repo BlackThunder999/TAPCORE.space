@@ -1,838 +1,565 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TAPCORE — NFC-метки</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #0a0a0a;
-            --panel: #111111;
-            --panel-alt: #161616;
-            --line: #242424;
-            --line-strong: #383838;
-            --text: #ededed;
-            --muted: #888888;
-            --accent: #3b82f6;
-            --signal: #10b981;
-            --warn: #f59e0b;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            line-height: 1.5;
-            font-size: 15px;
-            overflow-x: hidden;
-        }
-
-        .mono {
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .wrap {
-            max-width: 960px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Верхняя панель */
-        nav {
-            border-bottom: 1px solid var(--line);
-            background: rgba(10, 10, 10, 0.9);
-            backdrop-filter: blur(12px);
-            position: sticky;
-            top: 0;
-            z-index: 50;
-        }
-
-        .nav-row {
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .brand {
-            font-weight: 800;
-            font-size: 16px;
-            letter-spacing: 0.14em;
-            color: var(--text);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .status-led {
-            width: 8px;
-            height: 8px;
-            background: var(--signal);
-            border-radius: 50%;
-            display: inline-block;
-        }
-
-        .nav-menu {
-            display: flex;
-            gap: 8px;
-        }
-
-        .nav-link {
-            background: transparent;
-            border: 1px solid var(--line);
-            color: var(--text);
-            padding: 7px 14px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: border-color 0.15s, background 0.15s;
-        }
-
-        .nav-link:hover {
-            border-color: var(--line-strong);
-            background: var(--panel);
-        }
-
-        /* Первый экран */
-        .hero {
-            padding: 64px 0 56px;
-            border-bottom: 1px solid var(--line);
-            display: grid;
-            grid-template-columns: 1.15fr 0.85fr;
-            gap: 40px;
-            align-items: center;
-        }
-
-        .kicker {
-            font-size: 12px;
-            color: var(--muted);
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .kicker span {
-            color: var(--accent);
-        }
-
-        h1 {
-            font-size: clamp(32px, 5vw, 48px);
-            font-weight: 800;
-            line-height: 1.08;
-            letter-spacing: -0.03em;
-            margin-bottom: 18px;
-        }
-
-        .lead {
-            color: var(--muted);
-            font-size: 16px;
-            max-width: 460px;
-            margin-bottom: 28px;
-        }
-
-        .cta-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .btn-buy {
-            background: var(--text);
-            color: #0a0a0a;
-            border: none;
-            padding: 13px 24px;
-            border-radius: 6px;
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-            transition: opacity 0.15s, transform 0.1s;
-        }
-
-        .btn-buy:hover {
-            opacity: 0.9;
-        }
-
-        .btn-buy:active {
-            transform: scale(0.98);
-        }
-
-        .btn-ghost {
-            background: var(--panel);
-            color: var(--text);
-            border: 1px solid var(--line);
-            padding: 13px 20px;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: border-color 0.15s;
-        }
-
-        .btn-ghost:hover {
-            border-color: var(--line-strong);
-        }
-
-        /* Карточка реального стикера с Man Face */
-        .hardware-box {
-            background: var(--panel);
-            border: 1px solid var(--line);
-            border-radius: 10px;
-            padding: 24px;
-            position: relative;
-        }
-
-        .hw-top {
-            display: flex;
-            justify-content: space-between;
-            font-size: 11px;
-            color: var(--muted);
-            margin-bottom: 22px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--line);
-        }
-
-        .sticker-preview {
-            width: 176px;
-            height: 176px;
-            margin: 0 auto 22px;
-            border-radius: 50%;
-            background: #c7cbd1;
-            border: 4px solid #e5e7eb;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.65), inset 0 2px 6px rgba(255, 255, 255, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            position: relative;
-            transition: transform 0.15s ease, box-shadow 0.2s ease;
-            user-select: none;
-            overflow: hidden;
-        }
-
-        .sticker-preview:hover {
-            transform: scale(1.03);
-            box-shadow: 0 14px 35px rgba(59, 130, 246, 0.25), inset 0 2px 6px rgba(255, 255, 255, 0.6);
-        }
-
-        .sticker-preview:active {
-            transform: scale(0.95);
-        }
-
-        .sticker-preview.ping {
-            animation: tapBounce 0.35s ease;
-        }
-
-        @keyframes tapBounce {
-            0% { transform: scale(1); }
-            40% { transform: scale(0.93); }
-            100% { transform: scale(1); }
-        }
-
-        .sticker-glare {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 55%);
-            pointer-events: none;
-        }
-
-        .hw-log {
-            background: #080808;
-            border: 1px solid var(--line);
-            border-radius: 6px;
-            padding: 10px 12px;
-            font-size: 12px;
-            color: var(--muted);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .hw-log span.ok {
-            color: var(--signal);
-        }
-
-        /* Секция моделей */
-        .section {
-            padding: 56px 0;
-            border-bottom: 1px solid var(--line);
-        }
-
-        .section-head {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            margin-bottom: 28px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .section-head h2 {
-            font-size: 22px;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-        }
-
-        .section-head span {
-            font-size: 12px;
-            color: var(--muted);
-        }
-
-        .models {
-            display: grid;
-            grid-template-columns: 1.4fr 0.6fr;
-            gap: 20px;
-        }
-
-        .card {
-            background: var(--panel);
-            border: 1px solid var(--line);
-            border-radius: 10px;
-            padding: 28px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 16px;
-            gap: 12px;
-        }
-
-        .model-badge {
-            font-size: 11px;
-            color: var(--accent);
-            font-weight: 700;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            margin-bottom: 4px;
-        }
-
-        .model-title {
-            font-size: 24px;
-            font-weight: 800;
-            letter-spacing: -0.02em;
-        }
-
-        .price {
-            font-size: 22px;
-            font-weight: 800;
-            background: var(--panel-alt);
-            border: 1px solid var(--line-strong);
-            padding: 6px 14px;
-            border-radius: 6px;
-        }
-
-        .card-text {
-            color: var(--muted);
-            margin-bottom: 24px;
-            font-size: 14px;
-        }
-
-        /* Таблица характеристик */
-        .spec-table {
-            border-top: 1px solid var(--line);
-            margin-bottom: 24px;
-        }
-
-        .spec-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid var(--line);
-            font-size: 13px;
-            gap: 16px;
-        }
-
-        .spec-row span:first-child {
-            color: var(--muted);
-        }
-
-        .spec-row span:last-child {
-            font-weight: 500;
-            text-align: right;
-        }
-
-        /* Карточка Core 2 */
-        .card.locked {
-            background: #0d0d0d;
-            border-style: dashed;
-        }
-
-        .soon-tag {
-            display: inline-block;
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--warn);
-            border: 1px solid rgba(245, 158, 11, 0.35);
-            background: rgba(245, 158, 11, 0.08);
-            padding: 3px 9px;
-            border-radius: 4px;
-            margin-bottom: 12px;
-        }
-
-        .btn-locked {
-            width: 100%;
-            padding: 12px;
-            background: transparent;
-            border: 1px solid var(--line);
-            color: var(--muted);
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: not-allowed;
-        }
-
-        /* Блок Инструкция и Поддержка */
-        .docs-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .doc-box {
-            background: var(--panel);
-            border: 1px solid var(--line);
-            border-radius: 10px;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            gap: 20px;
-        }
-
-        .doc-box h3 {
-            font-size: 17px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .doc-box p {
-            color: var(--muted);
-            font-size: 14px;
-        }
-
-        /* Модальные окна */
-        .overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
-            z-index: 100;
-        }
-
-        .overlay.active {
-            display: flex;
-        }
-
-        .dialog {
-            background: #121212;
-            border: 1px solid var(--line-strong);
-            border-radius: 10px;
-            max-width: 520px;
-            width: 100%;
-            max-height: 85vh;
-            overflow-y: auto;
-            padding: 28px;
-            position: relative;
-        }
-
-        .dialog-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            padding-bottom: 14px;
-            border-bottom: 1px solid var(--line);
-        }
-
-        .dialog-top h3 {
-            font-size: 18px;
-            font-weight: 700;
-        }
-
-        .close-x {
-            background: var(--panel-alt);
-            border: 1px solid var(--line);
-            color: var(--text);
-            width: 30px;
-            height: 30px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .steps {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-
-        .step {
-            padding: 14px;
-            background: var(--bg);
-            border: 1px solid var(--line);
-            border-radius: 8px;
-        }
-
-        .step-head {
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 4px;
-            display: flex;
-            gap: 8px;
-        }
-
-        .step-head span {
-            color: var(--accent);
-        }
-
-        .step p {
-            font-size: 13px;
-            color: var(--muted);
-        }
-
-        /* Уведомление внизу */
-        .notice {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #161616;
-            border: 1px solid var(--line-strong);
-            border-left: 3px solid var(--accent);
-            padding: 14px 18px;
-            border-radius: 8px;
-            max-width: 340px;
-            font-size: 13px;
-            transform: translateY(150%);
-            transition: transform 0.25s ease;
-            z-index: 200;
-        }
-
-        .notice.show {
-            transform: translateY(0);
-        }
-
-        footer {
-            padding: 32px 0;
-            color: var(--muted);
-            font-size: 13px;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        @media (max-width: 780px) {
-            .hero, .models, .docs-grid {
-                grid-template-columns: 1fr;
-            }
-            .hero {
-                padding: 40px 0;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TAPCORE — Магазин NFC-стикеров</title>
+  <style>
+    :root {
+      --bg: #0b0b0e;
+      --card: #141419;
+      --border: #262630;
+      --text: #ffffff;
+      --muted: #6e6e7a;
+      --accent: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 18px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background: rgba(11, 11, 14, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 10;
+    }
+
+    .logo {
+      font-weight: 900;
+      font-size: 20px;
+      letter-spacing: 2px;
+    }
+
+    nav {
+      display: flex;
+      gap: 10px;
+    }
+
+    nav button {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    nav button.active {
+      background: var(--text);
+      color: var(--bg);
+      border-color: var(--text);
+    }
+
+    main {
+      max-width: 720px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 28px 20px;
+      flex: 1;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+      animation: fadeIn 0.25s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #1f1f28;
+      color: #a1a1b5;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .desc {
+      color: #a0a0b0;
+      font-size: 15px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .specs {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    .spec-item {
+      background: #0f0f13;
+      border: 1px solid var(--border);
+      padding: 12px;
+      border-radius: 12px;
+    }
+
+    .spec-title {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .spec-val {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .price {
+      font-size: 26px;
+      font-weight: 900;
+    }
+
+    .btn-primary {
+      background: var(--text);
+      color: var(--bg);
+      border: none;
+      padding: 12px 22px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    /* РАЗДЕЛ ОТСЛЕЖИВАНИЯ */
+    .track-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px;
+    }
+
+    .track-box h2 {
+      font-size: 22px;
+      margin-bottom: 8px;
+    }
+
+    .track-input-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .track-input-group input {
+      flex: 1;
+      background: #0b0b0e;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 13px 16px;
+      border-radius: 12px;
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      outline: none;
+    }
+
+    .track-input-group input:focus {
+      border-color: var(--text);
+    }
+
+    .error-msg {
+      color: #ff5c5c;
+      font-size: 14px;
+      margin-top: 12px;
+      display: none;
+    }
+
+    .timeline {
+      margin-top: 26px;
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+      border-top: 1px solid var(--border);
+      padding-top: 22px;
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      color: var(--muted); /* Не пройденные этапы — серые */
+      transition: 0.2s;
+    }
+
+    .step.done {
+      color: var(--text); /* Пройденные этапы — белые */
+    }
+
+    .step-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #262630;
+      border: 2px solid var(--muted);
+      flex-shrink: 0;
+    }
+
+    .step.done .step-dot {
+      background: var(--text);
+      border-color: var(--text);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+
+    .step-text {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    #secret-trigger {
+      cursor: default;
+      user-select: none;
+    }
+
+    /* МОДАЛКИ */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.82);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 100;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 22px;
+      width: 100%;
+      max-width: 460px;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    .modal h3 {
+      margin-bottom: 14px;
+      font-size: 18px;
+    }
+
+    .modal input {
+      width: 100%;
+      background: #0b0b0e;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      font-size: 15px;
+    }
+
+    .admin-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      gap: 10px;
+    }
+
+    .admin-code {
+      font-family: monospace;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .admin-row select {
+      background: #0b0b0e;
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 6px 8px;
+      border-radius: 8px;
+      font-size: 13px;
+      max-width: 210px;
+    }
+
+    .admin-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .btn-sec {
+      background: #23232d;
+      color: var(--text);
+      border: none;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      flex: 1;
+    }
+  </style>
 </head>
 <body>
 
-    <nav>
-        <div class="wrap nav-row">
-            <a href="#" class="brand">
-                <span class="status-led"></span>
-                TAPCORE
-            </a>
-            <div class="nav-menu">
-                <button class="nav-link" onclick="openDialog('guide')">Инструкция</button>
-                <button class="nav-link" onclick="openDialog('support')">Не работает?</button>
-            </div>
+<header>
+  <div class="logo">TAPCORE</div>
+  <nav>
+    <button id="tab-shop" class="active" onclick="switchTab('shop')">Магазин</button>
+    <button id="tab-track" onclick="switchTab('track')">Отследить</button>
+  </nav>
+</header>
+
+<main>
+  <!-- РАЗДЕЛ МАГАЗИН -->
+  <section id="sec-shop" class="section active">
+    <div class="hero">
+      <div class="badge">DROP 01 • В НАЛИЧИИ 19 ШТ.</div>
+      <h1>TAPCORE Core 1</h1>
+      <p class="desc">
+        Ручная сборка каждого NFC-стикера с защитной подложкой, контролем вскрытия и фирменной упаковкой. Работает без батареек — просто поднеси смартфон.
+      </p>
+
+      <div class="specs">
+        <div class="spec-item">
+          <div class="spec-title">Чип</div>
+          <div class="spec-val">NTAG213 (Original)</div>
         </div>
-    </nav>
-
-    <div class="wrap">
-        <!-- Первый экран -->
-        <section class="hero">
-            <div>
-                <div class="kicker mono">
-                    <span>[REV 1.0]</span> NFC HARDWARE / СТАВРОПОЛЬ
-                </div>
-                <h1>NFC-метки, которые запускают что угодно в одно касание.</h1>
-                <p class="lead">
-                    Приклеиваешь стикер на чехол, стол или карту. Подносишь телефон — сразу открывается трек, Telegram, сайт или пранк-страница. Без батареек и лишних приложений.
-                </p>
-                <div class="cta-group">
-                    <button class="btn-buy" onclick="notifyBuy()">Купить Core 1 — 95 ₽</button>
-                    <button class="btn-ghost" onclick="openDialog('guide')">Как сменить ссылку</button>
-                </div>
-            </div>
-
-            <!-- Образец стикера Core 1 (Man Face) -->
-            <div class="hardware-box">
-                <div class="hw-top mono">
-                    <span>СТИКЕР // CORE 1 EDITION</span>
-                    <span>25 MM</span>
-                </div>
-
-                <div class="sticker-preview" id="tagSim" onclick="simulateTap()" title="Нажми для проверки считывания">
-                    <div class="sticker-glare"></div>
-                    <!-- Отрисованный стикер Man Face -->
-                    <svg viewBox="0 0 200 200" width="150" height="150" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Левая бровь -->
-                        <path d="M26 62 C44 48, 72 52, 84 60" stroke="#111" stroke-width="6.5" stroke-linecap="round" fill="none"/>
-                        <path d="M22 54 C32 46, 46 44, 58 45" stroke="#111" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-                        <!-- Правая бровь -->
-                        <path d="M116 60 C128 52, 156 48, 174 62" stroke="#111" stroke-width="6.5" stroke-linecap="round" fill="none"/>
-                        <path d="M142 45 C154 44, 168 46, 178 54" stroke="#111" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-
-                        <!-- Складки над глазами -->
-                        <path d="M44 72 L76 72" stroke="#111" stroke-width="2.5" stroke-linecap="round"/>
-                        <path d="M124 72 L156 72" stroke="#111" stroke-width="2.5" stroke-linecap="round"/>
-
-                        <!-- Левый глаз -->
-                        <path d="M34 86 Q58 75 80 86 Q58 95 34 86 Z" fill="#fff" stroke="#111" stroke-width="3.5" stroke-linejoin="round"/>
-                        <circle cx="57" cy="85" r="7.5" fill="#111"/>
-                        <circle cx="60" cy="82.5" r="2.2" fill="#fff"/>
-                        <path d="M85 81 Q88 86 85 91" stroke="#111" stroke-width="2.2" stroke-linecap="round" fill="none"/>
-
-                        <!-- Правый глаз -->
-                        <path d="M120 86 Q142 75 166 86 Q142 95 120 86 Z" fill="#fff" stroke="#111" stroke-width="3.5" stroke-linejoin="round"/>
-                        <circle cx="143" cy="85" r="7.5" fill="#111"/>
-                        <circle cx="146" cy="82.5" r="2.2" fill="#fff"/>
-                        <path d="M115 81 Q112 86 115 91" stroke="#111" stroke-width="2.2" stroke-linecap="round" fill="none"/>
-
-                        <!-- Фирменная ухмылка -->
-                        <path d="M56 142 L56 150" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
-                        <path d="M56 146 Q116 153 144 134" stroke="#111" stroke-width="4.2" stroke-linecap="round" fill="none"/>
-                        <!-- Складка щеки -->
-                        <path d="M168 118 Q158 144 146 164" stroke="#111" stroke-width="3.2" stroke-linecap="round" fill="none"/>
-                    </svg>
-                </div>
-
-                <div class="hw-log mono" id="hwLog">
-                    <span>Нажми на стикер для теста</span>
-                    <span>CORE 1</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- Модели -->
-        <section class="section">
-            <div class="section-head">
-                <h2>Линейка меток</h2>
-                <span class="mono">АКТУАЛЬНЫЙ ДРОП // 2026</span>
-            </div>
-
-            <div class="models">
-                <!-- Core 1 -->
-                <div class="card">
-                    <div>
-                        <div class="card-header">
-                            <div>
-                                <div class="model-badge mono">ПОКОЛЕНИЕ 01</div>
-                                <div class="model-title">TapCore Core 1</div>
-                            </div>
-                            <div class="price mono">95 ₽</div>
-                        </div>
-
-                        <p class="card-text">
-                            Базовый виниловый стикер с вшитым NFC-чипом. Защищён от влаги, держится на пластике, стекле и бумаге. Можем сразу зашить твою ссылку перед отправкой или оставить пустым под настройку.
-                        </p>
-
-                        <div class="spec-table">
-                            <div class="spec-row">
-                                <span>Стандарт</span>
-                                <span class="mono">ISO 14443-4 / Type A</span>
-                            </div>
-                            <div class="spec-row">
-                                <span>Перезапись</span>
-                                <span>До 100 000 раз через телефон</span>
-                            </div>
-                            <div class="spec-row">
-                                <span>Материал</span>
-                                <span>Плотный влагостойкий ПВХ</span>
-                            </div>
-                            <div class="spec-row">
-                                <span>Совместимость</span>
-                                <span>iPhone (от iPhone 7) и Android с NFC</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button class="btn-buy" style="width: 100%;" onclick="notifyBuy()">
-                        Купить Core 1 (скоро откроем заказ)
-                    </button>
-                </div>
-
-                <!-- Core 2 -->
-                <div class="card locked">
-                    <div>
-                        <div class="soon-tag mono">СКОРО</div>
-                        <div class="model-badge mono" style="color: var(--muted);">ПОКОЛЕНИЕ 02</div>
-                        <div class="model-title" style="margin-bottom: 12px;">TapCore Core 2</div>
-                        <p class="card-text">
-                            Следующая версия в жёстком корпусе с эпоксидной линзой и увеличенной антенной. Формат брелока, который не боится ключей и падений.
-                        </p>
-                    </div>
-                    <button class="btn-locked mono" disabled>Скоро</button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Инструкция и Поддержка -->
-        <section class="section" style="border-bottom: none;">
-            <div class="section-head">
-                <h2>Инструкция и поддержка</h2>
-                <span class="mono">FAQ / ПОМОЩЬ</span>
-            </div>
-
-            <div class="docs-grid">
-                <div class="doc-box">
-                    <div>
-                        <h3>Как поменять ссылку на метке</h3>
-                        <p>
-                            Менять ссылку можно сколько угодно раз за 20 секунд. Нужен только телефон с NFC и одно бесплатное приложение.
-                        </p>
-                    </div>
-                    <button class="btn-ghost" style="width: 100%;" onclick="openDialog('guide')">
-                        Читать инструкцию
-                    </button>
-                </div>
-
-                <div class="doc-box">
-                    <div>
-                        <h3>Почему метка не срабатывает</h3>
-                        <p>
-                            Если телефон никак не реагирует на стикер — скорее всего, в этой модели нет NFC или модуль выключен в настройках.
-                        </p>
-                    </div>
-                    <button class="btn-ghost" style="width: 100%;" onclick="openDialog('support')">
-                        Открыть диагностику
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <footer>
-            <span class="mono">TAPCORE // CORE 1</span>
-            <span>tapcore.space</span>
-        </footer>
-    </div>
-
-    <!-- Окно: Инструкция -->
-    <div class="overlay" id="guide" onclick="bgClose(event, 'guide')">
-        <div class="dialog">
-            <div class="dialog-top">
-                <h3>Как поменять ссылку на Core 1</h3>
-                <button class="close-x" onclick="closeDialog('guide')">✕</button>
-            </div>
-            <div class="steps">
-                <div class="step">
-                    <div class="step-head"><span class="mono">01</span> Скачай NFC Tools</div>
-                    <p>Бесплатное приложение есть в App Store (iPhone) и Google Play (Android). Регистрация не нужна.</p>
-                </div>
-                <div class="step">
-                    <div class="step-head"><span class="mono">02</span> Открой вкладку «Запись» (Write)</div>
-                    <p>Нажми «Добавить запись» (Add a record) и выбери самый первый пункт — <strong>URL / URI</strong>.</p>
-                </div>
-                <div class="step">
-                    <div class="step-head"><span class="mono">03</span> Вставь свою ссылку</div>
-                    <p>Вставь адрес сайта, трека, Telegram или пранк-страницы и нажми «ОК».</p>
-                </div>
-                <div class="step">
-                    <div class="step-head"><span class="mono">04</span> Запиши на стикер</div>
-                    <p>Нажми «Записать» (Write) и приложи метку Core 1 к верхней части телефона на 1 секунду до галочки.</p>
-                </div>
-            </div>
+        <div class="spec-item">
+          <div class="spec-title">Сборка</div>
+          <div class="spec-val">Ручная + ОТК проверка</div>
         </div>
-    </div>
-
-    <!-- Окно: Поддержка -->
-    <div class="overlay" id="support" onclick="bgClose(event, 'support')">
-        <div class="dialog">
-            <div class="dialog-top">
-                <h3>Почему метка не работает?</h3>
-                <button class="close-x" onclick="closeDialog('support')">✕</button>
-            </div>
-            <div class="steps">
-                <div class="step">
-                    <div class="step-head"><span class="mono">01</span> Телефон не поддерживает NFC</div>
-                    <p>Главная причина — в бюджетных моделях Android (например, некоторых Redmi, Poco, Tecno, Realme) физически нет NFC-чипа. Проверить можно в настройках телефона через поиск по слову «NFC». Если пункт есть — убедись, что он включён.</p>
-                </div>
-                <div class="step">
-                    <div class="step-head"><span class="mono">02</span> Не туда прикладываешь</div>
-                    <p>На <strong>iPhone</strong> антенна находится на самом верхнем краю рядом с камерой (не по центру крышки). На <strong>Android</strong> — обычно по центру или чуть ниже камер. Поводи меткой 1–2 секунды.</p>
-                </div>
-                <div class="step">
-                    <div class="step-head"><span class="mono">03</span> Металл или магнитный чехол</div>
-                    <p>Стикер Core 1 нельзя клеить прямо на голый металл — он глушит сигнал. Также мешают чехлы с металлическими кольцами MagSafe или пластинами для автодержателей.</p>
-                </div>
-                <div class="step">
-                    <div class="step-head"><span class="mono">04</span> Экран заблокирован</div>
-                    <p>Считывание срабатывает только когда экран смартфона включён и разблокирован.</p>
-                </div>
-            </div>
+        <div class="spec-item">
+          <div class="spec-title">Упаковка</div>
+          <div class="spec-val">Пломба + мешочек органза</div>
         </div>
+        <div class="spec-item">
+          <div class="spec-title">Совместимость</div>
+          <div class="spec-val">iOS и Android с NFC</div>
+        </div>
+      </div>
+
+      <div class="price-row">
+        <div class="price">95 ₽</div>
+        <button class="btn-primary" onclick="switchTab('track')">Отследить заказ</button>
+      </div>
     </div>
+  </section>
 
-    <!-- Уведомление -->
-    <div class="notice" id="buyNotice">
-        <strong style="display: block; margin-bottom: 2px;">Продажи скоро откроются</strong>
-        <span style="color: var(--muted);">Первая партия Core 1 сейчас собирается. Скоро здесь появится прямая кнопка заказа.</span>
+  <!-- РАЗДЕЛ ОТСЛЕЖИВАНИЯ -->
+  <section id="sec-track" class="section">
+    <div class="track-box">
+      <h2>Отслеживание заказа</h2>
+      <p class="desc" style="margin-bottom: 0;">
+        Введи уникальный код из объявления или от продавца, чтобы узнать статус твоего стикера.
+      </p>
+
+      <div class="track-input-group">
+        <input type="text" id="track-input" placeholder="Например: TC-101" />
+        <button class="btn-primary" onclick="checkOrder()">Найти</button>
+      </div>
+
+      <div id="error-msg" class="error-msg">Код не найден. Проверь правильность ввода.</div>
+
+      <div id="timeline" class="timeline"></div>
     </div>
+  </section>
+</main>
 
-    <script>
-        function simulateTap() {
-            const disc = document.getElementById('tagSim');
-            const log = document.getElementById('hwLog');
-            disc.classList.remove('ping');
-            void disc.offsetWidth;
-            disc.classList.add('ping');
-            log.innerHTML = '<span class="ok">● Метка считана (0.04с)</span><span>URL: OK</span>';
-            setTimeout(() => {
-                log.innerHTML = '<span>Нажми на стикер для теста</span><span>CORE 1</span>';
-            }, 2200);
-        }
+<footer>
+  <span id="secret-trigger">©</span> 2026 TAPCORE. Все права защищены. Копирование материалов запрещено.
+</footer>
 
-        function openDialog(id) {
-            document.getElementById(id).classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
+<!-- ОКНО ПАРОЛЯ -->
+<div id="pass-modal" class="modal-backdrop">
+  <div class="modal">
+    <h3>Доступ ограничен</h3>
+    <input type="password" id="admin-pass" placeholder="Введите пароль" />
+    <div id="pass-err" class="error-msg" style="margin-bottom: 10px;">Неверный пароль</div>
+    <div class="admin-actions">
+      <button class="btn-sec" onclick="closeModals()">Отмена</button>
+      <button class="btn-primary" onclick="checkPass()">Войти</button>
+    </div>
+  </div>
+</div>
 
-        function closeDialog(id) {
-            document.getElementById(id).classList.remove('active');
-            document.body.style.overflow = '';
-        }
+<!-- АДМИН ПАНЕЛЬ -->
+<div id="admin-modal" class="modal-backdrop">
+  <div class="modal">
+    <h3>Управление партией (19 шт.)</h3>
+    <div id="admin-list"></div>
+    <div class="admin-actions">
+      <button class="btn-sec" onclick="copyConfig()">Скопировать конфиг для GitHub</button>
+      <button class="btn-primary" onclick="closeModals()">Готово</button>
+    </div>
+  </div>
+</div>
 
-        function bgClose(e, id) {
-            if (e.target.id === id) closeDialog(id);
-        }
+<script>
+  const STATUSES = [
+    "В магазине (ещё не купили)",
+    "В сборке",
+    "Передаём в доставку",
+    "Заказ передан в доставку",
+    "Заказ едет",
+    "Заказ приехал — заберите!"
+  ];
 
-        let timer;
-        function notifyBuy() {
-            const el = document.getElementById('buyNotice');
-            el.classList.add('show');
-            clearTimeout(timer);
-            timer = setTimeout(() => el.classList.remove('show'), 3500);
-        }
-    </script>
+  // === БАЗА 19 КОДОВ (ВСЕ ПО УМОЛЧАНИЮ: 0 = "В магазине (ещё не купили)") ===
+  // После изменения в админке нажми "Скопировать конфиг для GitHub" и замени эту строчку в коде:
+  const DEFAULT_ORDERS = {"TC-101":0,"TC-102":0,"TC-103":0,"TC-104":0,"TC-105":0,"TC-106":0,"TC-107":0,"TC-108":0,"TC-109":0,"TC-110":0,"TC-111":0,"TC-112":0,"TC-113":0,"TC-114":0,"TC-115":0,"TC-116":0,"TC-117":0,"TC-118":0,"TC-119":0};
+
+  let orders = JSON.parse(localStorage.getItem("tapcore_orders")) || { ...DEFAULT_ORDERS };
+
+  // Переключение вкладок
+  function switchTab(tab) {
+    document.getElementById("sec-shop").classList.toggle("active", tab === "shop");
+    document.getElementById("sec-track").classList.toggle("active", tab === "track");
+    document.getElementById("tab-shop").classList.toggle("active", tab === "shop");
+    document.getElementById("tab-track").classList.toggle("active", tab === "track");
+  }
+
+  // Поиск заказа
+  function checkOrder() {
+    const raw = document.getElementById("track-input").value.trim().toUpperCase();
+    const err = document.getElementById("error-msg");
+    const timeline = document.getElementById("timeline");
+
+    if (!(raw in orders)) {
+      err.style.display = "block";
+      timeline.style.display = "none";
+      return;
+    }
+
+    err.style.display = "none";
+    const currentStep = orders[raw];
+
+    timeline.innerHTML = STATUSES.map((label, idx) => {
+      const isDone = idx <= currentStep;
+      return `
+        <div class="step ${isDone ? "done" : ""}">
+          <div class="step-dot"></div>
+          <div class="step-text">${label}</div>
+        </div>
+      `;
+    }).join("");
+
+    timeline.style.display = "flex";
+  }
+
+  // Скрытый вход по нажатию на символ ©
+  document.getElementById("secret-trigger").addEventListener("click", () => {
+    document.getElementById("admin-pass").value = "";
+    document.getElementById("pass-err").style.display = "none";
+    document.getElementById("pass-modal").classList.add("open");
+  });
+
+  function checkPass() {
+    const val = document.getElementById("admin-pass").value;
+    if (val === "admin23++=") {
+      closeModals();
+      openAdmin();
+    } else {
+      document.getElementById("pass-err").style.display = "block";
+    }
+  }
+
+  function openAdmin() {
+    const list = document.getElementById("admin-list");
+    list.innerHTML = Object.keys(orders).map(code => {
+      const options = STATUSES.map((st, idx) =>
+        `<option value="${idx}" ${orders[code] === idx ? "selected" : ""}>${st}</option>`
+      ).join("");
+
+      return `
+        <div class="admin-row">
+          <span class="admin-code">${code}</span>
+          <select onchange="updateStatus('${code}', this.value)">${options}</select>
+        </div>
+      `;
+    }).join("");
+
+    document.getElementById("admin-modal").classList.add("open");
+  }
+
+  function updateStatus(code, statusIdx) {
+    orders[code] = Number(statusIdx);
+    localStorage.setItem("tapcore_orders", JSON.stringify(orders));
+    checkOrder();
+  }
+
+  function copyConfig() {
+    const line = `const DEFAULT_ORDERS = ${JSON.stringify(orders)};`;
+    navigator.clipboard.writeText(line).then(() => {
+      alert("Скопировано! Вставь эту строку в index.html на GitHub, чтобы статус обновился у всех покупателей.");
+    });
+  }
+
+  function closeModals() {
+    document.getElementById("pass-modal").classList.remove("open");
+    document.getElementById("admin-modal").classList.remove("open");
+  }
+</script>
+
 </body>
 </html>

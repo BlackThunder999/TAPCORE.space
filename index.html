@@ -187,7 +187,7 @@
             border-color: var(--line-strong);
         }
 
-        /* Интерактивный симулятор метки */
+        /* Карточка реального стикера с Man Face */
         .hardware-box {
             background: var(--panel);
             border: 1px solid var(--line);
@@ -201,59 +201,53 @@
             justify-content: space-between;
             font-size: 11px;
             color: var(--muted);
-            margin-bottom: 24px;
+            margin-bottom: 22px;
             padding-bottom: 12px;
             border-bottom: 1px solid var(--line);
         }
 
-        .tag-disc {
-            width: 168px;
-            height: 168px;
-            margin: 0 auto 24px;
+        .sticker-preview {
+            width: 176px;
+            height: 176px;
+            margin: 0 auto 22px;
             border-radius: 50%;
-            background: #0d0d0d;
-            border: 1px solid var(--line-strong);
+            background: #c7cbd1;
+            border: 4px solid #e5e7eb;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.65), inset 0 2px 6px rgba(255, 255, 255, 0.5);
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             position: relative;
-            transition: border-color 0.2s, transform 0.15s;
+            transition: transform 0.15s ease, box-shadow 0.2s ease;
             user-select: none;
+            overflow: hidden;
         }
 
-        .tag-disc:hover {
-            border-color: var(--accent);
+        .sticker-preview:hover {
+            transform: scale(1.03);
+            box-shadow: 0 14px 35px rgba(59, 130, 246, 0.25), inset 0 2px 6px rgba(255, 255, 255, 0.6);
         }
 
-        .tag-disc:active {
-            transform: scale(0.96);
+        .sticker-preview:active {
+            transform: scale(0.95);
         }
 
-        .tag-ring {
+        .sticker-preview.ping {
+            animation: tapBounce 0.35s ease;
+        }
+
+        @keyframes tapBounce {
+            0% { transform: scale(1); }
+            40% { transform: scale(0.93); }
+            100% { transform: scale(1); }
+        }
+
+        .sticker-glare {
             position: absolute;
-            inset: 14px;
-            border-radius: 50%;
-            border: 1px dashed #333;
-            transition: border-color 0.3s, transform 0.6s ease;
-        }
-
-        .tag-disc.ping .tag-ring {
-            border-color: var(--signal);
-            transform: rotate(90deg);
-        }
-
-        .tag-label {
-            font-weight: 800;
-            font-size: 15px;
-            letter-spacing: 0.1em;
-        }
-
-        .tag-sub {
-            font-size: 11px;
-            color: var(--muted);
-            margin-top: 4px;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 55%);
+            pointer-events: none;
         }
 
         .hw-log {
@@ -591,22 +585,51 @@
                 </div>
             </div>
 
-            <!-- Интерактивная проверка -->
+            <!-- Образец стикера Core 1 (Man Face) -->
             <div class="hardware-box">
                 <div class="hw-top mono">
-                    <span>TAPCORE // CORE 1</span>
-                    <span>13.56 MHz</span>
+                    <span>СТИКЕР // CORE 1 EDITION</span>
+                    <span>25 MM</span>
                 </div>
 
-                <div class="tag-disc" id="tagSim" onclick="simulateTap()">
-                    <div class="tag-ring"></div>
-                    <div class="tag-label">CORE 1</div>
-                    <div class="tag-sub mono">нажми для теста</div>
+                <div class="sticker-preview" id="tagSim" onclick="simulateTap()" title="Нажми для проверки считывания">
+                    <div class="sticker-glare"></div>
+                    <!-- Отрисованный стикер Man Face -->
+                    <svg viewBox="0 0 200 200" width="150" height="150" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Левая бровь -->
+                        <path d="M26 62 C44 48, 72 52, 84 60" stroke="#111" stroke-width="6.5" stroke-linecap="round" fill="none"/>
+                        <path d="M22 54 C32 46, 46 44, 58 45" stroke="#111" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                        <!-- Правая бровь -->
+                        <path d="M116 60 C128 52, 156 48, 174 62" stroke="#111" stroke-width="6.5" stroke-linecap="round" fill="none"/>
+                        <path d="M142 45 C154 44, 168 46, 178 54" stroke="#111" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+
+                        <!-- Складки над глазами -->
+                        <path d="M44 72 L76 72" stroke="#111" stroke-width="2.5" stroke-linecap="round"/>
+                        <path d="M124 72 L156 72" stroke="#111" stroke-width="2.5" stroke-linecap="round"/>
+
+                        <!-- Левый глаз -->
+                        <path d="M34 86 Q58 75 80 86 Q58 95 34 86 Z" fill="#fff" stroke="#111" stroke-width="3.5" stroke-linejoin="round"/>
+                        <circle cx="57" cy="85" r="7.5" fill="#111"/>
+                        <circle cx="60" cy="82.5" r="2.2" fill="#fff"/>
+                        <path d="M85 81 Q88 86 85 91" stroke="#111" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+
+                        <!-- Правый глаз -->
+                        <path d="M120 86 Q142 75 166 86 Q142 95 120 86 Z" fill="#fff" stroke="#111" stroke-width="3.5" stroke-linejoin="round"/>
+                        <circle cx="143" cy="85" r="7.5" fill="#111"/>
+                        <circle cx="146" cy="82.5" r="2.2" fill="#fff"/>
+                        <path d="M115 81 Q112 86 115 91" stroke="#111" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+
+                        <!-- Фирменная ухмылка -->
+                        <path d="M56 142 L56 150" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
+                        <path d="M56 146 Q116 153 144 134" stroke="#111" stroke-width="4.2" stroke-linecap="round" fill="none"/>
+                        <!-- Складка щеки -->
+                        <path d="M168 118 Q158 144 146 164" stroke="#111" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+                    </svg>
                 </div>
 
                 <div class="hw-log mono" id="hwLog">
-                    <span>Статус: ожидание касания</span>
-                    <span>NTAG213</span>
+                    <span>Нажми на стикер для теста</span>
+                    <span>CORE 1</span>
                 </div>
             </div>
         </section>
@@ -631,13 +654,13 @@
                         </div>
 
                         <p class="card-text">
-                            Базовый виниловый стикер с вшитым чипом NTAG213. Защищён от влаги, держится на пластике, стекле и бумаге. Можем сразу зашить твою ссылку перед отправкой или оставить пустым под настройку.
+                            Базовый виниловый стикер с вшитым NFC-чипом. Защищён от влаги, держится на пластике, стекле и бумаге. Можем сразу зашить твою ссылку перед отправкой или оставить пустым под настройку.
                         </p>
 
                         <div class="spec-table">
                             <div class="spec-row">
-                                <span>Чип</span>
-                                <span class="mono">NXP NTAG213 (144 байта)</span>
+                                <span>Стандарт</span>
+                                <span class="mono">ISO 14443-4 / Type A</span>
                             </div>
                             <div class="spec-row">
                                 <span>Перезапись</span>
@@ -783,9 +806,9 @@
             disc.classList.remove('ping');
             void disc.offsetWidth;
             disc.classList.add('ping');
-            log.innerHTML = '<span class="ok">● Сигнал считан (0.04с)</span><span>URL: OK</span>';
+            log.innerHTML = '<span class="ok">● Метка считана (0.04с)</span><span>URL: OK</span>';
             setTimeout(() => {
-                log.innerHTML = '<span>Статус: ожидание касания</span><span>NTAG213</span>';
+                log.innerHTML = '<span>Нажми на стикер для теста</span><span>CORE 1</span>';
             }, 2200);
         }
 

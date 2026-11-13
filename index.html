@@ -11,7 +11,6 @@
       --border: #262630;
       --text: #ffffff;
       --muted: #6e6e7a;
-      --accent: #ffffff;
     }
 
     * {
@@ -48,49 +47,12 @@
       letter-spacing: 2px;
     }
 
-    nav {
-      display: flex;
-      gap: 10px;
-    }
-
-    nav button {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      padding: 8px 14px;
-      border-radius: 10px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    nav button.active {
-      background: var(--text);
-      color: var(--bg);
-      border-color: var(--text);
-    }
-
     main {
       max-width: 720px;
       width: 100%;
       margin: 0 auto;
       padding: 28px 20px;
       flex: 1;
-    }
-
-    .section {
-      display: none;
-    }
-
-    .section.active {
-      display: block;
-      animation: fadeIn 0.25s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
     }
 
     .hero {
@@ -176,90 +138,6 @@
       display: inline-block;
     }
 
-    /* РАЗДЕЛ ОТСЛЕЖИВАНИЯ */
-    .track-box {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 24px;
-    }
-
-    .track-box h2 {
-      font-size: 22px;
-      margin-bottom: 8px;
-    }
-
-    .track-input-group {
-      display: flex;
-      gap: 10px;
-      margin-top: 16px;
-    }
-
-    .track-input-group input {
-      flex: 1;
-      background: #0b0b0e;
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 13px 16px;
-      border-radius: 12px;
-      font-size: 16px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      outline: none;
-    }
-
-    .track-input-group input:focus {
-      border-color: var(--text);
-    }
-
-    .error-msg {
-      color: #ff5c5c;
-      font-size: 14px;
-      margin-top: 12px;
-      display: none;
-    }
-
-    .timeline {
-      margin-top: 26px;
-      display: none;
-      flex-direction: column;
-      gap: 16px;
-      border-top: 1px solid var(--border);
-      padding-top: 22px;
-    }
-
-    .step {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      color: var(--muted); /* Не пройденные этапы — серые */
-      transition: 0.2s;
-    }
-
-    .step.done {
-      color: var(--text); /* Пройденные этапы — белые */
-    }
-
-    .step-dot {
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: #262630;
-      border: 2px solid var(--muted);
-      flex-shrink: 0;
-    }
-
-    .step.done .step-dot {
-      background: var(--text);
-      border-color: var(--text);
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-    }
-
-    .step-text {
-      font-size: 15px;
-      font-weight: 600;
-    }
-
     footer {
       border-top: 1px solid var(--border);
       padding: 20px;
@@ -267,299 +145,51 @@
       color: var(--muted);
       font-size: 13px;
     }
-
-    #secret-trigger {
-      cursor: default;
-      user-select: none;
-    }
-
-    /* МОДАЛКИ */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.82);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      z-index: 100;
-    }
-
-    .modal-backdrop.open {
-      display: flex;
-    }
-
-    .modal {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 22px;
-      width: 100%;
-      max-width: 460px;
-      max-height: 85vh;
-      overflow-y: auto;
-    }
-
-    .modal h3 {
-      margin-bottom: 14px;
-      font-size: 18px;
-    }
-
-    .modal input {
-      width: 100%;
-      background: #0b0b0e;
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 12px;
-      border-radius: 10px;
-      margin-bottom: 12px;
-      font-size: 15px;
-    }
-
-    .admin-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--border);
-      gap: 10px;
-    }
-
-    .admin-code {
-      font-family: monospace;
-      font-size: 14px;
-      font-weight: 700;
-    }
-
-    .admin-row select {
-      background: #0b0b0e;
-      color: var(--text);
-      border: 1px solid var(--border);
-      padding: 6px 8px;
-      border-radius: 8px;
-      font-size: 13px;
-      max-width: 210px;
-    }
-
-    .admin-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 16px;
-    }
-
-    .btn-sec {
-      background: #23232d;
-      color: var(--text);
-      border: none;
-      padding: 10px 14px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      flex: 1;
-    }
   </style>
 </head>
 <body>
 
 <header>
   <div class="logo">TAPCORE</div>
-  <nav>
-    <button id="tab-shop" class="active" onclick="switchTab('shop')">Магазин</button>
-    <button id="tab-track" onclick="switchTab('track')">Отследить</button>
-  </nav>
 </header>
 
 <main>
-  <!-- РАЗДЕЛ МАГАЗИН -->
-  <section id="sec-shop" class="section active">
-    <div class="hero">
-      <div class="badge">DROP 01 • В НАЛИЧИИ 19 ШТ.</div>
-      <h1>TAPCORE Core 1</h1>
-      <p class="desc">
-        Ручная сборка каждого NFC-стикера с защитной подложкой, контролем вскрытия и фирменной упаковкой. Работает без батареек — просто поднеси смартфон.
-      </p>
+  <div class="hero">
+    <div class="badge">DROP 01 • В НАЛИЧИИ 19 ШТ.</div>
+    <h1>TAPCORE Core 1</h1>
+    <p class="desc">
+      Ручная сборка каждого NFC-стикера с защитной подложкой, контролем вскрытия и фирменной упаковкой. Работает без батареек — просто поднеси смартфон.
+    </p>
 
-      <div class="specs">
-        <div class="spec-item">
-          <div class="spec-title">Чип</div>
-          <div class="spec-val">NTAG213 (Original)</div>
-        </div>
-        <div class="spec-item">
-          <div class="spec-title">Сборка</div>
-          <div class="spec-val">Ручная + ОТК проверка</div>
-        </div>
-        <div class="spec-item">
-          <div class="spec-title">Упаковка</div>
-          <div class="spec-val">Пломба + мешочек органза</div>
-        </div>
-        <div class="spec-item">
-          <div class="spec-title">Совместимость</div>
-          <div class="spec-val">iOS и Android с NFC</div>
-        </div>
+    <div class="specs">
+      <div class="spec-item">
+        <div class="spec-title">Чип</div>
+        <div class="spec-val">NTAG213 (Original)</div>
       </div>
-
-      <div class="price-row">
-        <div class="price">95 ₽</div>
-        <button class="btn-primary" onclick="switchTab('track')">Отследить заказ</button>
+      <div class="spec-item">
+        <div class="spec-title">Сборка</div>
+        <div class="spec-val">Ручная + ОТК проверка</div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-title">Упаковка</div>
+        <div class="spec-val">Пломба + мешочек органза</div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-title">Совместимость</div>
+        <div class="spec-val">iOS и Android с NFC</div>
       </div>
     </div>
-  </section>
 
-  <!-- РАЗДЕЛ ОТСЛЕЖИВАНИЯ -->
-  <section id="sec-track" class="section">
-    <div class="track-box">
-      <h2>Отслеживание заказа</h2>
-      <p class="desc" style="margin-bottom: 0;">
-        Введи уникальный код из объявления или от продавца, чтобы узнать статус твоего стикера.
-      </p>
-
-      <div class="track-input-group">
-        <input type="text" id="track-input" placeholder="Например: TC-101" />
-        <button class="btn-primary" onclick="checkOrder()">Найти</button>
-      </div>
-
-      <div id="error-msg" class="error-msg">Код не найден. Проверь правильность ввода.</div>
-
-      <div id="timeline" class="timeline"></div>
+    <div class="price-row">
+      <div class="price">95 ₽</div>
+      <a href="#buy" class="btn-primary">Заказать на Авито</a>
     </div>
-  </section>
+  </div>
 </main>
 
 <footer>
-  <span id="secret-trigger">©</span> 2026 TAPCORE. Все права защищены. Копирование материалов запрещено.
+  © 2026 TAPCORE. Все права защищены. Копирование материалов запрещено.
 </footer>
-
-<!-- ОКНО ПАРОЛЯ -->
-<div id="pass-modal" class="modal-backdrop">
-  <div class="modal">
-    <h3>Доступ ограничен</h3>
-    <input type="password" id="admin-pass" placeholder="Введите пароль" />
-    <div id="pass-err" class="error-msg" style="margin-bottom: 10px;">Неверный пароль</div>
-    <div class="admin-actions">
-      <button class="btn-sec" onclick="closeModals()">Отмена</button>
-      <button class="btn-primary" onclick="checkPass()">Войти</button>
-    </div>
-  </div>
-</div>
-
-<!-- АДМИН ПАНЕЛЬ -->
-<div id="admin-modal" class="modal-backdrop">
-  <div class="modal">
-    <h3>Управление партией (19 шт.)</h3>
-    <div id="admin-list"></div>
-    <div class="admin-actions">
-      <button class="btn-sec" onclick="copyConfig()">Скопировать конфиг для GitHub</button>
-      <button class="btn-primary" onclick="closeModals()">Готово</button>
-    </div>
-  </div>
-</div>
-
-<script>
-  const STATUSES = [
-    "В магазине (ещё не купили)",
-    "В сборке",
-    "Передаём в доставку",
-    "Заказ передан в доставку",
-    "Заказ едет",
-    "Заказ приехал — заберите!"
-  ];
-
-  // === БАЗА 19 КОДОВ (ВСЕ ПО УМОЛЧАНИЮ: 0 = "В магазине (ещё не купили)") ===
-  // После изменения в админке нажми "Скопировать конфиг для GitHub" и замени эту строчку в коде:
-  const DEFAULT_ORDERS = {"TC-101":0,"TC-102":0,"TC-103":0,"TC-104":0,"TC-105":0,"TC-106":0,"TC-107":0,"TC-108":0,"TC-109":0,"TC-110":0,"TC-111":0,"TC-112":0,"TC-113":0,"TC-114":0,"TC-115":0,"TC-116":0,"TC-117":0,"TC-118":0,"TC-119":0};
-
-  let orders = JSON.parse(localStorage.getItem("tapcore_orders")) || { ...DEFAULT_ORDERS };
-
-  // Переключение вкладок
-  function switchTab(tab) {
-    document.getElementById("sec-shop").classList.toggle("active", tab === "shop");
-    document.getElementById("sec-track").classList.toggle("active", tab === "track");
-    document.getElementById("tab-shop").classList.toggle("active", tab === "shop");
-    document.getElementById("tab-track").classList.toggle("active", tab === "track");
-  }
-
-  // Поиск заказа
-  function checkOrder() {
-    const raw = document.getElementById("track-input").value.trim().toUpperCase();
-    const err = document.getElementById("error-msg");
-    const timeline = document.getElementById("timeline");
-
-    if (!(raw in orders)) {
-      err.style.display = "block";
-      timeline.style.display = "none";
-      return;
-    }
-
-    err.style.display = "none";
-    const currentStep = orders[raw];
-
-    timeline.innerHTML = STATUSES.map((label, idx) => {
-      const isDone = idx <= currentStep;
-      return `
-        <div class="step ${isDone ? "done" : ""}">
-          <div class="step-dot"></div>
-          <div class="step-text">${label}</div>
-        </div>
-      `;
-    }).join("");
-
-    timeline.style.display = "flex";
-  }
-
-  // Скрытый вход по нажатию на символ ©
-  document.getElementById("secret-trigger").addEventListener("click", () => {
-    document.getElementById("admin-pass").value = "";
-    document.getElementById("pass-err").style.display = "none";
-    document.getElementById("pass-modal").classList.add("open");
-  });
-
-  function checkPass() {
-    const val = document.getElementById("admin-pass").value;
-    if (val === "admin23++=") {
-      closeModals();
-      openAdmin();
-    } else {
-      document.getElementById("pass-err").style.display = "block";
-    }
-  }
-
-  function openAdmin() {
-    const list = document.getElementById("admin-list");
-    list.innerHTML = Object.keys(orders).map(code => {
-      const options = STATUSES.map((st, idx) =>
-        `<option value="${idx}" ${orders[code] === idx ? "selected" : ""}>${st}</option>`
-      ).join("");
-
-      return `
-        <div class="admin-row">
-          <span class="admin-code">${code}</span>
-          <select onchange="updateStatus('${code}', this.value)">${options}</select>
-        </div>
-      `;
-    }).join("");
-
-    document.getElementById("admin-modal").classList.add("open");
-  }
-
-  function updateStatus(code, statusIdx) {
-    orders[code] = Number(statusIdx);
-    localStorage.setItem("tapcore_orders", JSON.stringify(orders));
-    checkOrder();
-  }
-
-  function copyConfig() {
-    const line = `const DEFAULT_ORDERS = ${JSON.stringify(orders)};`;
-    navigator.clipboard.writeText(line).then(() => {
-      alert("Скопировано! Вставь эту строку в index.html на GitHub, чтобы статус обновился у всех покупателей.");
-    });
-  }
-
-  function closeModals() {
-    document.getElementById("pass-modal").classList.remove("open");
-    document.getElementById("admin-modal").classList.remove("open");
-  }
-</script>
 
 </body>
 </html>

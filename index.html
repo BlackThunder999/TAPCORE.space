@@ -155,6 +155,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
       padding-top: 16px;
       border-top: 1px solid var(--border);
     }
@@ -164,17 +166,45 @@
       font-weight: 900;
     }
 
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
     .btn-primary {
       background: var(--text);
       color: var(--bg);
       border: none;
-      padding: 12px 22px;
+      padding: 12px 18px;
       border-radius: 12px;
       font-weight: 700;
-      font-size: 15px;
+      font-size: 14px;
       cursor: pointer;
       text-decoration: none;
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-tg {
+      background: #1d1d26;
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.2s;
+    }
+
+    .btn-tg:hover {
+      border-color: var(--text);
     }
 
     /* FAQ СТИЛИ */
@@ -237,6 +267,11 @@
       line-height: 1.55;
     }
 
+    .faq-answer a {
+      color: var(--text);
+      text-decoration: underline;
+    }
+
     footer {
       border-top: 1px solid var(--border);
       padding: 20px;
@@ -287,7 +322,10 @@
 
       <div class="price-row">
         <div class="price">95 ₽</div>
-        <a href="#buy" class="btn-primary">Заказать на Авито</a>
+        <div class="actions">
+          <a href="https://t.me/tapcore_nfc" target="_blank" rel="noopener noreferrer" class="btn-tg">Telegram</a>
+          <a href="#buy" class="btn-primary">Заказать на Авито</a>
+        </div>
       </div>
     </div>
   </section>
@@ -338,7 +376,7 @@
       <details>
         <summary>Что если стикер повредится при доставке?</summary>
         <div class="faq-answer">
-          Мы проверяем каждый чип вручную перед запечатыванием в пакет, поэтому заводской брак исключён. Если стикер всё же пострадает при перевозке — просто напишите нам, и мы бесплатно отправим замену.
+          Мы проверяем каждый чип вручную перед запечатыванием в пакет, поэтому заводской брак исключён. Если стикер всё же пострадает при перевозке — просто напишите нам в <a href="https://t.me/tapcore_nfc" target="_blank" rel="noopener noreferrer">Telegram</a>, и мы бесплатно отправим замену.
         </div>
       </details>
     </div>

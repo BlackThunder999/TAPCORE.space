@@ -3,399 +3,1014 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TAPCORE — Магазин NFC-стикеров</title>
+  <title>РуКод — Язык программирования от TapCore</title>
   <style>
     :root {
-      --bg: #0b0b0e;
-      --card: #141419;
-      --border: #262630;
-      --text: #ffffff;
-      --muted: #6e6e7a;
+      --bg: #0b0c10;
+      --panel: #13151c;
+      --panel-2: #1a1d27;
+      --border: #262a38;
+      --text: #eef0f6;
+      --muted: #8b92a8;
+      --accent: #6c5ce7;
+      --accent-hover: #7d6ff0;
+      --green: #00d285;
+      --orange: #ff9f43;
+      --red: #ff5252;
+      --radius: 12px;
+      --mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+      --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       background: var(--bg);
       color: var(--text);
+      font-family: var(--sans);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow-x: hidden;
     }
 
+    /* Шапка */
     header {
-      border-bottom: 1px solid var(--border);
-      padding: 16px 20px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      position: sticky;
-      top: 0;
-      background: rgba(11, 11, 14, 0.92);
-      backdrop-filter: blur(10px);
-      z-index: 10;
+      justify-content: space-between;
+      padding: 12px 20px;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+      flex-wrap: wrap;
     }
 
-    .logo {
-      font-weight: 900;
-      font-size: 20px;
-      letter-spacing: 2px;
-      cursor: pointer;
-    }
-
-    nav {
+    .brand {
       display: flex;
-      gap: 8px;
+      align-items: center;
+      gap: 10px;
     }
 
-    nav button {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      padding: 7px 14px;
-      border-radius: 10px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    nav button.active {
-      background: var(--text);
-      color: var(--bg);
-      border-color: var(--text);
-    }
-
-    main {
-      max-width: 720px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 24px 20px;
-      flex: 1;
-    }
-
-    .section {
-      display: none;
-    }
-
-    .section.active {
-      display: block;
-      animation: fadeIn 0.2s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .hero {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 24px;
-      margin-bottom: 20px;
-    }
-
-    .badge {
-      display: inline-block;
-      background: #1f1f28;
-      color: #a1a1b5;
-      font-size: 12px;
-      font-weight: 700;
-      padding: 5px 10px;
+    .logo-badge {
+      background: linear-gradient(135deg, #6c5ce7, #00d285);
+      color: #fff;
+      font-weight: 900;
+      padding: 6px 10px;
       border-radius: 8px;
-      margin-bottom: 12px;
+      font-size: 14px;
       letter-spacing: 0.5px;
     }
 
-    h1 {
-      font-size: 28px;
-      margin-bottom: 10px;
+    .brand-title {
+      font-size: 18px;
+      font-weight: 800;
     }
 
-    .desc {
-      color: #a0a0b0;
-      font-size: 15px;
-      line-height: 1.5;
-      margin-bottom: 20px;
-    }
-
-    .specs {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-bottom: 22px;
-    }
-
-    .spec-item {
-      background: #0f0f13;
-      border: 1px solid var(--border);
-      padding: 12px;
-      border-radius: 12px;
-    }
-
-    .spec-title {
+    .brand-sub {
       font-size: 12px;
       color: var(--muted);
-      margin-bottom: 4px;
+      background: var(--panel-2);
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
     }
 
-    .spec-val {
-      font-size: 14px;
-      font-weight: 700;
-      line-height: 1.3;
-    }
-
-    .price-row {
+    .nav-actions {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
-      padding-top: 16px;
-      border-top: 1px solid var(--border);
-    }
-
-    .price {
-      font-size: 26px;
-      font-weight: 900;
-    }
-
-    .actions {
-      display: flex;
       gap: 8px;
       flex-wrap: wrap;
     }
 
-    .btn-primary {
-      background: var(--text);
-      color: var(--bg);
-      border: none;
-      padding: 12px 18px;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 14px;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .btn-tg {
-      background: #1d1d26;
+    button, .btn {
+      background: var(--panel-2);
       color: var(--text);
       border: 1px solid var(--border);
-      padding: 12px 18px;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 14px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
       cursor: pointer;
-      text-decoration: none;
+      transition: 0.15s ease;
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      transition: 0.2s;
+      gap: 6px;
+      text-decoration: none;
     }
 
-    .btn-tg:hover {
-      border-color: var(--text);
+    button:hover, .btn:hover {
+      border-color: var(--accent);
+      background: #212534;
     }
 
-    /* FAQ СТИЛИ */
-    .faq-header {
-      margin-bottom: 18px;
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
     }
 
-    .faq-header h2 {
-      font-size: 24px;
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-green {
+      background: rgba(0, 210, 133, 0.15);
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    .btn-green:hover {
+      background: rgba(0, 210, 133, 0.25);
+    }
+
+    .btn-projects {
+      background: linear-gradient(135deg, rgba(108, 92, 231, 0.2), rgba(0, 210, 133, 0.2));
+      border-color: #6c5ce7;
+      color: #fff;
+    }
+
+    /* Панель шаблонов */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      background: #0f1117;
+      border-bottom: 1px solid var(--border);
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .templates {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .templates span {
+      font-size: 12px;
+      color: var(--muted);
+      margin-right: 4px;
+    }
+
+    .chip {
+      padding: 5px 10px;
+      font-size: 12px;
+      border-radius: 6px;
+      background: var(--panel);
+    }
+
+    /* Основная рабочая зона */
+    .workspace {
+      display: grid;
+      grid-template-columns: 230px 1fr 1fr;
+      flex: 1;
+      min-height: calc(100vh - 112px);
+    }
+
+    @media (max-width: 1024px) {
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+      .blocks-sidebar {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+    }
+
+    /* Сайдбар с кирпичиками команд */
+    .blocks-sidebar {
+      background: var(--panel);
+      border-right: 1px solid var(--border);
+      padding: 14px;
+      overflow-y: auto;
+    }
+
+    .sidebar-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--muted);
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .block-group {
+      margin-bottom: 14px;
+    }
+
+    .block-group-label {
+      font-size: 11px;
+      color: var(--muted);
       margin-bottom: 6px;
     }
 
-    .faq-list {
+    .block-btn {
+      width: 100%;
+      text-align: left;
+      justify-content: flex-start;
+      padding: 7px 10px;
+      margin-bottom: 5px;
+      font-size: 12px;
+      font-family: var(--mono);
+      background: var(--panel-2);
+    }
+
+    .block-btn b {
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    /* Редактор кода */
+    .editor-pane {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      border-right: 1px solid var(--border);
+      background: #0d0f14;
     }
 
-    details {
-      background: var(--card);
+    .pane-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 14px;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    textarea#code-input {
+      flex: 1;
+      width: 100%;
+      min-height: 360px;
+      background: transparent;
+      color: #f8f9fc;
+      border: none;
+      outline: none;
+      padding: 16px;
+      font-family: var(--mono);
+      font-size: 14px;
+      line-height: 1.6;
+      resize: none;
+      tab-size: 2;
+    }
+
+    /* Правая панель (Превью + Скомпилированный код) */
+    .output-pane {
+      display: flex;
+      flex-direction: column;
+      background: var(--bg);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      padding: 5px 10px;
+      font-size: 12px;
+      border-radius: 6px;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--muted);
+    }
+
+    .tab-btn.active {
+      background: var(--panel-2);
+      border-color: var(--border);
+      color: var(--text);
+    }
+
+    .output-content {
+      flex: 1;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    iframe#preview-frame {
+      width: 100%;
+      height: 100%;
+      min-height: 400px;
+      border: none;
+      background: #111;
+      flex: 1;
+    }
+
+    pre#compiled-code {
+      display: none;
+      flex: 1;
+      padding: 16px;
+      margin: 0;
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.5;
+      color: #a5b4fc;
+      background: #0b0d12;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .copy-code-bar {
+      display: none;
+      padding: 8px 14px;
+      background: var(--panel);
+      border-top: 1px solid var(--border);
+      justify-content: flex-end;
+    }
+
+    /* Модальные окна */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 16px 18px;
+      border-radius: 16px;
+      max-width: 520px;
+      width: 100%;
+      padding: 24px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+      animation: pop 0.18s ease;
     }
 
-    summary {
-      font-weight: 700;
-      font-size: 15px;
-      cursor: pointer;
-      list-style: none;
+    @keyframes pop {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .modal-header h2 {
+      font-size: 20px;
+    }
+
+    .project-card {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
       gap: 12px;
     }
 
-    summary::-webkit-details-marker {
-      display: none;
+    .project-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--green);
+      background: rgba(0, 210, 133, 0.12);
+      padding: 4px 8px;
+      border-radius: 6px;
+      width: fit-content;
     }
 
-    summary::after {
-      content: "+";
-      font-size: 20px;
-      color: var(--muted);
-      font-weight: 400;
-      transition: transform 0.2s;
+    .project-card h3 {
+      font-size: 18px;
     }
 
-    details[open] summary::after {
-      content: "−";
-      color: var(--text);
-    }
-
-    .faq-answer {
-      margin-top: 12px;
-      padding-top: 12px;
-      border-top: 1px solid var(--border);
-      color: #a0a0b0;
+    .project-card p {
       font-size: 14px;
-      line-height: 1.55;
-    }
-
-    .faq-answer a {
-      color: var(--text);
-      text-decoration: underline;
-    }
-
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 20px;
-      text-align: center;
       color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--green);
+      color: #08120e;
+      font-weight: 700;
+      padding: 10px 16px;
+      border-radius: 10px;
       font-size: 13px;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: 0.25s ease;
+      z-index: 2000;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
     }
   </style>
 </head>
 <body>
 
-<header>
-  <div class="logo" onclick="switchTab('shop')">TAPCORE</div>
-  <nav>
-    <button id="tab-shop" class="active" onclick="switchTab('shop')">Магазин</button>
-    <button id="tab-faq" onclick="switchTab('faq')">FAQ</button>
-  </nav>
-</header>
+  <header>
+    <div class="brand">
+      <div class="logo-badge">TAPCORE</div>
+      <div class="brand-title">РуКод</div>
+      <div class="brand-sub">v1.0 • Русский ЯП</div>
+    </div>
 
-<main>
-  <!-- РАЗДЕЛ МАГАЗИН -->
-  <section id="sec-shop" class="section active">
-    <div class="hero">
-      <div class="badge">DROP 01 • В НАЛИЧИИ 19 ШТ.</div>
-      <h1>TAPCORE Core 1</h1>
-      <p class="desc">
-        Ручная сборка каждого NFC-стикера с усиленной клеевой основой и индивидуальным защитным пакетом с контролем вскрытия. Работает без батареек — просто поднеси смартфон.
-      </p>
+    <div class="nav-actions">
+      <button class="btn-projects" onclick="openModal('projects-modal')">🚀 Проекты</button>
+      <button onclick="openModal('docs-modal')">📖 Шпаргалка</button>
+      <button onclick="shareCode()">🔗 Поделиться</button>
+      <button class="btn-green" onclick="downloadHTML()">⬇️ Скачать .html</button>
+      <button class="btn-primary" onclick="compileAll()">▶️ Запустить</button>
+    </div>
+  </header>
 
-      <div class="specs">
-        <div class="spec-item">
-          <div class="spec-title">Чип</div>
-          <div class="spec-val">NTAG213 (Original)</div>
-        </div>
-        <div class="spec-item">
-          <div class="spec-title">Сборка</div>
-          <div class="spec-val">Ручная + ОТК проверка</div>
-        </div>
-        <div class="spec-item">
-          <div class="spec-title">Упаковка</div>
-          <div class="spec-val">Защитный пакет с контролем вскрытия</div>
-        </div>
-        <div class="spec-item">
-          <div class="spec-title">Совместимость</div>
-          <div class="spec-val">iOS и Android с NFC</div>
+  <div class="toolbar">
+    <div class="templates">
+      <span>Шаблоны:</span>
+      <button class="chip" onclick="loadTemplate('clicker')">🐹 Кликер</button>
+      <button class="chip" onclick="loadTemplate('hacker')">💻 Взлом Пентагона</button>
+      <button class="chip" onclick="loadTemplate('prank')">💀 Пранк / Тряска</button>
+      <button class="chip" onclick="loadTemplate('bio')">🪪 Визитка</button>
+    </div>
+    <div style="font-size: 12px; color: var(--muted);">
+      Пиши по-русски слева — готовый сайт и код справа ⚡
+    </div>
+  </div>
+
+  <div class="workspace">
+    <!-- Левая панель команд -->
+    <aside class="blocks-sidebar">
+      <div class="sidebar-title">+ Вставить команду</div>
+
+      <div class="block-group">
+        <div class="block-group-label">Внешний вид (HTML/CSS)</div>
+        <button class="block-btn" onclick="insertSnippet('фон #0f1016')"><b>фон</b> #0f1016</button>
+        <button class="block-btn" onclick="insertSnippet('заголовок Привет мир!')"><b>заголовок</b> Текст</button>
+        <button class="block-btn" onclick="insertSnippet('текст Обычный текст')"><b>текст</b> Абзац</button>
+        <button class="block-btn" onclick="insertSnippet('картинка https://cataas.com/cat')"><b>картинка</b> URL</button>
+        <button class="block-btn" onclick="insertSnippet('ссылка Перейти на TapCore -> https://tapcore.space')"><b>ссылка</b> Текст -> URL</button>
+        <button class="block-btn" onclick="insertSnippet('поле имя Введи свой ник')"><b>поле</b> переменная</button>
+      </div>
+
+      <div class="block-group">
+        <div class="block-group-label">Кнопки и экшн (JS)</div>
+        <button class="block-btn" onclick="insertSnippet('кнопка Нажми меня -> уведомление Красава!')"><b>кнопка</b> Текст -> экшн</button>
+        <button class="block-btn" onclick="insertSnippet('тряска')"><b>тряска</b> (экран)</button>
+        <button class="block-btn" onclick="insertSnippet('конфетти')"><b>конфетти</b> (салют)</button>
+        <button class="block-btn" onclick="insertSnippet('звук https://www.myinstants.com/media/sounds/vine-boom.mp3')"><b>звук</b> URL.mp3</button>
+      </div>
+
+      <div class="block-group">
+        <div class="block-group-label">Логика (JS / Python / Lua)</div>
+        <button class="block-btn" onclick="insertSnippet('пусть счет = 0')"><b>пусть</b> x = 0</button>
+        <button class="block-btn" onclick="insertSnippet('счет + 1')"><b>x + 1</b> (прибавить)</button>
+        <button class="block-btn" onclick="insertSnippet('рандом число от 1 до 100')"><b>рандом</b> 1..100</button>
+        <button class="block-btn" onclick="insertSnippet('если счет >= 10 то\n  уведомление Победа!\n  конфетти\nконец')"><b>если</b> ... <b>то</b> ... <b>конец</b></button>
+        <button class="block-btn" onclick="insertSnippet('повторить 3 раз\n  вывести Привет!\nконец')"><b>повторить</b> N <b>раз</b></button>
+      </div>
+    </aside>
+
+    <!-- Редактор РуКода -->
+    <section class="editor-pane">
+      <div class="pane-header">
+        <span>📝 код.рукод</span>
+        <span id="line-counter">Строк: 0</span>
+      </div>
+      <textarea id="code-input" spellcheck="false" placeholder="Начни писать на РуКоде..."></textarea>
+    </section>
+
+    <!-- Правая панель вывода -->
+    <section class="output-pane">
+      <div class="pane-header">
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="preview" onclick="switchTab('preview', this)">👁️ Живой сайт</button>
+          <button class="tab-btn" data-tab="html" onclick="switchTab('html', this)">🌐 HTML + JS</button>
+          <button class="tab-btn" data-tab="python" onclick="switchTab('python', this)">🐍 Python</button>
+          <button class="tab-btn" data-tab="lua" onclick="switchTab('lua', this)">🎮 Lua (Roblox)</button>
         </div>
       </div>
 
-      <div class="price-row">
-        <div class="price">95 ₽</div>
-        <div class="actions">
-          <a href="https://t.me/tapcore_nfc" target="_blank" rel="noopener noreferrer" class="btn-tg">Telegram</a>
-          <a href="https://www.avito.ru/stavropol/zapchasti_i_aksessuary/nfc_metka_1_core_s_kartinkoy_lva_s_pricheskoy_8546519380" target="_blank" rel="noopener noreferrer" class="btn-primary">Заказать на Авито</a>
+      <div class="output-content">
+        <iframe id="preview-frame" sandbox="allow-scripts allow-modals allow-popups"></iframe>
+        <pre id="compiled-code"></pre>
+        <div class="copy-code-bar" id="copy-code-bar">
+          <button onclick="copyGeneratedCode()">📋 Скопировать код</button>
         </div>
       </div>
+    </section>
+  </div>
+
+  <!-- Модалка: Наши проекты -->
+  <div class="modal-backdrop" id="projects-modal" onclick="closeModalOnBg(event, 'projects-modal')">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>🚀 Проекты TapCore</h2>
+        <button onclick="closeModal('projects-modal')">✕</button>
+      </div>
+      <div class="project-card">
+        <span class="project-tag">Официальный магазин</span>
+        <h3>TAPCORE — Метки NFC</h3>
+        <p>
+          Физические NFC-метки с мемными наклейками и кастомными действиями. 
+          Приложил к телефону — вылетел пранк, звук, сайт или секретная ссылка.
+        </p>
+        <a href="shop.html" class="btn btn-primary" style="justify-content: center; margin-top: 4px;">
+          Перейти в магазин →
+        </a>
+      </div>
     </div>
-  </section>
+  </div>
 
-  <!-- РАЗДЕЛ FAQ -->
-  <section id="sec-faq" class="section">
-    <div class="faq-header">
-      <h2>Частые вопросы (FAQ)</h2>
-      <p class="desc" style="margin-bottom: 0;">Всё о работе стикеров, упаковке и доставке.</p>
+  <!-- Модалка: Шпаргалка по синтаксису -->
+  <div class="modal-backdrop" id="docs-modal" onclick="closeModalOnBg(event, 'docs-modal')">
+    <div class="modal" style="max-width: 620px;">
+      <div class="modal-header">
+        <h2>📖 Как писать на РуКоде</h2>
+        <button onclick="closeModal('docs-modal')">✕</button>
+      </div>
+      <div style="font-size: 13px; line-height: 1.6; color: var(--muted); display: flex; flex-direction: column; gap: 10px;">
+        <p>В <b>РуКоде</b> не нужны точки с запятой и сложные скобки. Просто пиши команды с новой строки:</p>
+        <div style="background: #0b0d12; padding: 12px; border-radius: 8px; font-family: var(--mono); color: #eef0f6; font-size: 12px;">
+          пусть монеты = 0<br>
+          заголовок Моя игра<br>
+          текст [id: баланс] Монет: {монеты}<br>
+          кнопка Фармить -> монеты + 1; обновить баланс "Монет: {монеты}"; конфетти<br><br>
+          если монеты == 5 то<br>
+          &nbsp;&nbsp;уведомление Ты набрал 5 монет!<br>
+          конец
+        </div>
+        <p><b>Фишки:</b> используй <code>{имя_переменной}</code> прямо внутри любого текста, чтобы подставлять туда значения на лету. Через <code>;</code> можно вешать сразу несколько действий на одну кнопку!</p>
+      </div>
     </div>
+  </div>
 
-    <div class="faq-list">
-      <details open>
-        <summary>Как работает NFC-стикер TAPCORE?</summary>
-        <div class="faq-answer">
-          Внутри стикера установлен оригинальный чип NTAG213. Ему не нужны батарейки или зарядка — он питается от сигнала телефона. Просто поднеси разблокированный смартфон к наклейке, и на экране сразу откроется пранк-страница или зашитая ссылка.
-        </div>
-      </details>
+  <div class="toast" id="toast">Готово!</div>
 
-      <details>
-        <summary>На каких телефонах он сработает?</summary>
-        <div class="faq-answer">
-          Работает на всех современных смартфонах с NFC: <b>iPhone 7 и новее</b> (считывает автоматически верхней гранью экрана без сторонних программ) и <b>Android</b> (достаточно включить NFC в шторке уведомлений).
-        </div>
-      </details>
+  <script>
+    const templates = {
+      clicker: `фон #0d0f17
+заголовок 🐹 Тапалка на РуКоде
+пусть клики = 0
 
-      <details>
-        <summary>Что за защитная упаковка идёт в комплекте?</summary>
-        <div class="faq-answer">
-          Каждый стикер запечатывается в индивидуальный прозрачный БОПП-пакет с клеевым клапаном контроля вскрытия. Пакет защищает наклейку от влаги, пыли и царапин в дороге, а пломба гарантирует, что упаковку никто не вскрывал до вас.
-        </div>
-      </details>
+текст [id: счетчик] Ты натапал: 0 монет
+кнопка ТАПНУТЬ (+1) -> клики + 1; обновить счетчик "Ты натапал: {клики} монет"
+кнопка Бонус x10 -> клики + 10; обновить счетчик "Ты натапал: {клики} монет"; конфетти
 
-      <details>
-        <summary>Насколько крепко держится наклейка и куда клеить?</summary>
-        <div class="faq-answer">
-          Используется перманентный клей повышенной фиксации — стикер надёжно держится на чехле телефона, ноутбуке, столе или пластике. <b>Важно:</b> не клейте метку напрямую на голый металл (например, металлический корпус без чехла), так как металл глушит радиосигнал NFC.
-        </div>
-      </details>
+если клики >= 20 то
+  уведомление Легенда! Уже 20+ кликов!
+  тряска
+конец`,
 
-      <details>
-        <summary>Можно ли перезаписать ссылку на свою?</summary>
-        <div class="faq-answer">
-          Да, если метка не заблокирована от перезаписи, вы можете в любой момент записать на неё свою ссылку на Telegram, соцсети, Wi-Fi или любую шутку через бесплатное приложение <b>NFC Tools</b>.
-        </div>
-      </details>
+      hacker: `фон #050a07
+заголовок 💻 ТЕРМИНАЛ ДОСТУПА v2.6
+пусть цель = Пентагон
+поле цель Введи цель взлома
 
-      <details>
-        <summary>Что если стикер повредится при доставке?</summary>
-        <div class="faq-answer">
-          Мы проверяем каждый чип вручную перед запечатыванием в пакет, поэтому заводской брак исключён. Если стикер всё же пострадает при перевозке — просто напишите нам в <a href="https://t.me/tapcore_nfc" target="_blank" rel="noopener noreferrer">Telegram</a>, и мы бесплатно отправим замену.
-        </div>
-      </details>
-    </div>
-  </section>
-</main>
+текст [id: статус] Статус: Ожидание запуска...
+кнопка ЗАПУСТИТЬ ВЗЛОМ -> обновить статус "Взламываем {цель}... Доступ получен!"; звук https://www.myinstants.com/media/sounds/vine-boom.mp3; тряска; конфетти`,
 
-<footer>
-  © 2026 TAPCORE. Все права защищены. Копирование материалов запрещено.
-</footer>
+      prank: `фон #14090c
+заголовок ⚠️ СИСТЕМНОЕ УВЕДОМЛЕНИЕ
+текст Обнаружен критический уровень кринжа на устройстве.
+кнопка Исправить ошибку -> звук https://www.myinstants.com/media/sounds/vine-boom.mp3; тряска; уведомление Ошибка не исправлена, ты затроллен 💀`,
 
-<script>
-  function switchTab(tab) {
-    document.getElementById("sec-shop").classList.toggle("active", tab === "shop");
-    document.getElementById("sec-faq").classList.toggle("active", tab === "faq");
-    document.getElementById("tab-shop").classList.toggle("active", tab === "shop");
-    document.getElementById("tab-faq").classList.toggle("active", tab === "faq");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-</script>
+      bio: `фон #10121b
+картинка https://cataas.com/cat
+заголовок Привет, я разработчик!
+текст Пишу сайты и скрипты на РуКоде от TapCore.
+ссылка Заценить NFC-метки -> shop.html
+кнопка Кинуть респект -> конфетти; уведомление Спасибо за респект, бро!`
+    };
 
+    const codeInput = document.getElementById('code-input');
+    const previewFrame = document.getElementById('preview-frame');
+    const compiledCodePre = document.getElementById('compiled-code');
+    const copyCodeBar = document.getElementById('copy-code-bar');
+
+    let currentTab = 'preview';
+    let generatedOutputs = { html: '', python: '', lua: '' };
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
+    }
+
+    function openModal(id) {
+      document.getElementById(id).classList.add('open');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+    }
+
+    function closeModalOnBg(e, id) {
+      if (e.target.id === id) closeModal(id);
+    }
+
+    function insertSnippet(snippet) {
+      const start = codeInput.selectionStart;
+      const end = codeInput.selectionEnd;
+      const val = codeInput.value;
+      const prefix = start > 0 && val[start - 1] !== '\n' ? '\n' : '';
+      codeInput.value = val.substring(0, start) + prefix + snippet + '\n' + val.substring(end);
+      codeInput.focus();
+      compileAll();
+    }
+
+    function loadTemplate(name) {
+      codeInput.value = templates[name] || '';
+      compileAll();
+      showToast('Шаблон загружен!');
+    }
+
+    function switchTab(tab, btn) {
+      currentTab = tab;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      if (tab === 'preview') {
+        previewFrame.style.display = 'block';
+        compiledCodePre.style.display = 'none';
+        copyCodeBar.style.display = 'none';
+      } else {
+        previewFrame.style.display = 'none';
+        compiledCodePre.style.display = 'block';
+        copyCodeBar.style.display = 'flex';
+        compiledCodePre.textContent = generatedOutputs[tab] || '';
+      }
+    }
+
+    // Превращает {переменная} в JS-шаблон
+    function interpolateJS(str) {
+      return '`' + str.replace(/`/g, '\\`').replace(/\{([а-яА-Яa-zA-Z0-9_]+)\}/g, '${vars["$1"] ?? ""}') + '`';
+    }
+
+    // Парсер экшенов (через ;) в JS
+    function parseActionsToJS(actionStr) {
+      const parts = actionStr.split(';').map(s => s.trim()).filter(Boolean);
+      return parts.map(act => {
+        if (act.startsWith('уведомление ')) {
+          const msg = act.slice(12).trim();
+          return `alert(${interpolateJS(msg)});`;
+        }
+        if (act === 'тряска') {
+          return `document.body.classList.remove('shake'); void document.body.offsetWidth; document.body.classList.add('shake');`;
+        }
+        if (act === 'конфетти') {
+          return `launchConfetti();`;
+        }
+        if (act.startsWith('звук ')) {
+          const url = act.slice(5).trim();
+          return `new Audio(${JSON.stringify(url)}).play().catch(()=>{});`;
+        }
+        if (act.startsWith('перейти ')) {
+          const url = act.slice(8).trim();
+          return `window.open(${JSON.stringify(url)}, '_blank');`;
+        }
+        if (act.startsWith('обновить ')) {
+          const m = act.match(/^обновить\s+([а-яА-Яa-zA-Z0-9_]+)\s+"?(.*?)"?$/);
+          if (m) {
+            return `const el_${m[1]} = document.getElementById(${JSON.stringify(m[1])}); if(el_${m[1]}) el_${m[1]}.innerText = ${interpolateJS(m[2])};`;
+          }
+        }
+        // Переменная + число / - число / = значение
+        const mathMatch = act.match(/^([а-яА-Яa-zA-Z0-9_]+)\s*(\+|\-|=)\s*(.+)$/);
+        if (mathMatch) {
+          const [, vName, op, rawVal] = mathMatch;
+          const num = Number(rawVal);
+          if (op === '+') return `vars["${vName}"] = (Number(vars["${vName}"]) || 0) + ${isNaN(num) ? JSON.stringify(rawVal) : num}; checkReactive();`;
+          if (op === '-') return `vars["${vName}"] = (Number(vars["${vName}"]) || 0) - ${isNaN(num) ? 0 : num}; checkReactive();`;
+          if (op === '=') return `vars["${vName}"] = ${isNaN(num) ? interpolateJS(rawVal.replace(/^"|"$/g, '')) : num}; checkReactive();`;
+        }
+        return `// Неизвестное действие: ${act}`;
+      }).join('\n      ');
+    }
+
+    function compileAll() {
+      const raw = codeInput.value;
+      const lines = raw.split('\n');
+      document.getElementById('line-counter').textContent = `Строк: ${lines.length}`;
+
+      let bgColor = '#0f1117';
+      let htmlElements = [];
+      let jsInit = [];
+      let jsReactiveBlocks = [];
+      let pyLines = ['# Сгенерировано в РуКод (TapCore)', 'import random\n'];
+      let luaLines = ['-- Сгенерировано в РуКод (Roblox / Lua)\n'];
+
+      let inIfBlock = false;
+      let currentIfCond = '';
+      let currentIfBodyJS = [];
+
+      lines.forEach(rawLine => {
+        const line = rawLine.trim();
+        if (!line || line.startsWith('//') || line.startsWith('#')) return;
+
+        // Конец блока если / повторить
+        if (line === 'конец') {
+          if (inIfBlock) {
+            jsReactiveBlocks.push(`if (${currentIfCond}) {\n      ${currentIfBodyJS.join('\n      ')}\n    }`);
+            inIfBlock = false;
+            currentIfCond = '';
+            currentIfBodyJS = [];
+          }
+          pyLines.push('# конец блока');
+          luaLines.push('end');
+          return;
+        }
+
+        // Условие: если x >= 10 то
+        const ifMatch = line.match(/^если\s+([а-яА-Яa-zA-Z0-9_]+)\s*(==|!=|>=|<=|>|<)\s*(.+?)\s+то$/);
+        if (ifMatch) {
+          const [, vName, op, val] = ifMatch;
+          const jsVal = isNaN(Number(val)) ? JSON.stringify(val.replace(/^"|"$/g, '')) : Number(val);
+          inIfBlock = true;
+          currentIfCond = `vars["${vName}"] ${op} ${jsVal}`;
+          currentIfBodyJS = [];
+          pyLines.push(`if ${vName} ${op} ${jsVal}:`);
+          luaLines.push(`if ${vName} ${op === '!=' ? '~=' : op} ${jsVal} then`);
+          return;
+        }
+
+        // Цикл: повторить N раз
+        const loopMatch = line.match(/^повторить\s+(\d+)\s+раз$/);
+        if (loopMatch) {
+          pyLines.push(`for _ in range(${loopMatch[1]}):`);
+          luaLines.push(`for i = 1, ${loopMatch[1]} do`);
+          return;
+        }
+
+        // Внутри блока если
+        if (inIfBlock) {
+          currentIfBodyJS.push(parseActionsToJS(line));
+          if (line.startsWith('вывести ')) {
+            const msg = line.slice(8).trim();
+            pyLines.push(`    print(f"${msg}")`);
+            luaLines.push(`    print("${msg}")`);
+          }
+          return;
+        }
+
+        // Фон
+        if (line.startsWith('фон ')) {
+          const c = line.slice(4).trim();
+          const colorMap = { 'черный': '#0a0a0c', 'белый': '#f4f4f8', 'синий': '#0d1b2a', 'красный': '#2b090c', 'зеленый': '#081c15' };
+          bgColor = colorMap[c.toLowerCase()] || c;
+          return;
+        }
+
+        // Переменная: пусть x = 0
+        const letMatch = line.match(/^пусть\s+([а-яА-Яa-zA-Z0-9_]+)\s*=\s*(.+)$/);
+        if (letMatch) {
+          const [, vName, rawVal] = letMatch;
+          const num = Number(rawVal);
+          const cleanStr = rawVal.replace(/^"|"$/g, '');
+          jsInit.push(`vars["${vName}"] = ${isNaN(num) ? JSON.stringify(cleanStr) : num};`);
+          pyLines.push(`${vName} = ${isNaN(num) ? JSON.stringify(cleanStr) : num}`);
+          luaLines.push(`local ${vName} = ${isNaN(num) ? JSON.stringify(cleanStr) : num}`);
+          return;
+        }
+
+        // Рандом: рандом x от 1 до 100
+        const randMatch = line.match(/^рандом\s+([а-яА-Яa-zA-Z0-9_]+)\s+от\s+(\d+)\s+до\s+(\d+)$/);
+        if (randMatch) {
+          const [, vName, min, max] = randMatch;
+          jsInit.push(`vars["${vName}"] = Math.floor(Math.random() * (${max} - ${min} + 1)) + ${min};`);
+          pyLines.push(`${vName} = random.randint(${min}, ${max})`);
+          luaLines.push(`local ${vName} = math.random(${min}, ${max})`);
+          return;
+        }
+
+        // Заголовок
+        if (line.startsWith('заголовок ')) {
+          const txt = line.slice(10).trim();
+          htmlElements.push(`<h1>${escapeHtml(txt)}</h1>`);
+          return;
+        }
+
+        // Текст (опционально с [id: имя])
+        if (line.startsWith('текст ')) {
+          let rest = line.slice(6).trim();
+          let idAttr = '';
+          const idMatch = rest.match(/^\[id:\s*([а-яА-Яa-zA-Z0-9_]+)\]\s*(.*)$/);
+          if (idMatch) {
+            idAttr = ` id="${idMatch[1]}"`;
+            rest = idMatch[2];
+          }
+          htmlElements.push(`<p${idAttr}>${escapeHtml(rest)}</p>`);
+          return;
+        }
+
+        // Картинка
+        if (line.startsWith('картинка ')) {
+          const url = line.slice(9).trim();
+          htmlElements.push(`<img src="${escapeHtml(url)}" alt="Изображение" />`);
+          return;
+        }
+
+        // Ссылка: ссылка Текст -> URL
+        if (line.startsWith('ссылка ')) {
+          const [label, url] = line.slice(7).split('->').map(s => s.trim());
+          htmlElements.push(`<a class="rk-link" href="${escapeHtml(url || '#')}" target="_blank">${escapeHtml(label)}</a>`);
+          return;
+        }
+
+        // Поле ввода: поле имя_переменной Плейсхолдер
+        if (line.startsWith('поле ')) {
+          const parts = line.slice(5).trim().split(' ');
+          const vName = parts[0];
+          const placeholder = parts.slice(1).join(' ') || `Введи ${vName}`;
+          htmlElements.push(`<input class="rk-input" placeholder="${escapeHtml(placeholder)}" oninput="vars['${vName}'] = this.value" />`);
+          pyLines.push(`${vName} = input("${placeholder}: ")`);
+          return;
+        }
+
+        // Кнопка: кнопка Текст -> действие
+        if (line.startsWith('кнопка ')) {
+          const arrowIdx = line.indexOf('->');
+          const label = arrowIdx !== -1 ? line.slice(7, arrowIdx).trim() : line.slice(7).trim();
+          const actStr = arrowIdx !== -1 ? line.slice(arrowIdx + 2).trim() : '';
+          const fnName = 'btnAct_' + Math.random().toString(36).slice(2, 7);
+          jsInit.push(`window.${fnName} = function() {\n      ${parseActionsToJS(actStr)}\n    };`);
+          htmlElements.push(`<button class="rk-btn" onclick="${fnName}()">${escapeHtml(label)}</button>`);
+          return;
+        }
+
+        // Вывести
+        if (line.startsWith('вывести ')) {
+          const msg = line.slice(8).trim();
+          pyLines.push(`print(f"${msg}")`);
+          luaLines.push(`print("${msg}")`);
+          htmlElements.push(`<div class="rk-log">${escapeHtml(msg)}</div>`);
+        }
+      });
+
+      const fullHTML = `<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Проект на РуКоде — TapCore</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 32px 20px;
+      background: ${bgColor};
+      color: #f4f6fb;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      min-height: 100vh;
+      box-sizing: border-box;
+      gap: 14px;
+    }
+    h1 { font-size: 28px; margin: 0; }
+    p { font-size: 16px; color: #cbd2e6; margin: 0; max-width: 540px; }
+    img { max-width: 240px; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+    .rk-btn {
+      background: #6c5ce7;
+      color: #fff;
+      border: none;
+      padding: 12px 22px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.1s, background 0.15s;
+    }
+    .rk-btn:hover { background: #7d6ff0; }
+    .rk-btn:active { transform: scale(0.96); }
+    .rk-link {
+      color: #00d285;
+      text-decoration: none;
+      font-weight: 700;
+      border: 1px solid #00d285;
+      padding: 8px 16px;
+      border-radius: 8px;
+    }
+    .rk-input {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      width: 240px;
+    }
+    .rk-log {
+      font-family: monospace;
+      background: rgba(0,0,0,0.35);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+    @keyframes shakeAnim {
+      0%, 100% { transform: translate(0, 0); }
+      20% { transform: translate(-8px, 4px); }
+      40% { transform: translate(8px, -4px); }
+      60% { transform: translate(-6px, -2px); }
+      80% { transform: translate(6px, 3px); }
+    }
+    .shake { animation: shakeAnim 0.4s ease; }
+  </style>
+</head>
+<body>
+  ${htmlElements.join('\n  ')}
+
+  <script>
+    const vars = {};
+    function checkReactive() {
+      ${jsReactiveBlocks.join('\n      ')}
+    }
+    function launchConfetti() {
+      for (let i = 0; i < 35; i++) {
+        const c = document.createElement('div');
+        c.style.cssText = 'position:fixed;width:8px;height:8px;border-radius:2px;pointer-events:none;z-index:9999;top:-10px;left:' + (Math.random()*100) + 'vw;background:hsl(' + (Math.random()*360) + ',90%,60%);transition:transform 1.4s ease-out, opacity 1.4s;';
+        document.body.appendChild(c);
+        requestAnimationFrame(() => {
+          c.style.transform = 'translateY(' + (80 + Math.random()*30) + 'vh) rotate(' + (Math.random()*720) + 'deg)';
+          c.style.opacity = '0';
+        });
+        setTimeout(() => c.remove(), 1500);
+      }
+    }
+    ${jsInit.join('\n    ')}
+  <\/script>
+</body>
+</html>`;
+
+      generatedOutputs.html = fullHTML;
+      generatedOutputs.python = pyLines.join('\n');
+      generatedOutputs.lua = luaLines.join('\n');
+
+      previewFrame.srcdoc = fullHTML;
+      if (currentTab !== 'preview') {
+        compiledCodePre.textContent = generatedOutputs[currentTab];
+      }
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function downloadHTML() {
+      compileAll();
+      const blob = new Blob([generatedOutputs.html], { type: 'text/html;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'rukod-project.html';
+      a.click();
+      showToast('Файл rukod-project.html скачан!');
+    }
+
+    function copyGeneratedCode() {
+      navigator.clipboard.writeText(compiledCodePre.textContent);
+      showToast('Код скопирован в буфер!');
+    }
+
+    function shareCode() {
+      const encoded = btoa(unescape(encodeURIComponent(codeInput.value)));
+      const url = `${window.location.origin}${window.location.pathname}#code=${encoded}`;
+      navigator.clipboard.writeText(url);
+      showToast('Ссылка на твой код скопирована!');
+    }
+
+    // Автозапуск при вводе + загрузка кода из URL если открыли по ссылке
+    codeInput.addEventListener('input', compileAll);
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const hash = window.location.hash;
+      if (hash.startsWith('#code=')) {
+        try {
+          const decoded = decodeURIComponent(escape(atob(hash.slice(6))));
+          codeInput.value = decoded;
+          compileAll();
+          return;
+        } catch (e) {}
+      }
+      loadTemplate('clicker');
+    });
+  </script>
 </body>
 </html>

@@ -132,6 +132,43 @@
       color: var(--green);
     }
 
+    /* Блок FAQ */
+    .faq-section {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .faq-section h2 {
+      font-size: 20px;
+    }
+
+    .faq-item {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .faq-question {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text);
+    }
+
+    .faq-answer {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
     .btn {
       background: var(--accent);
       color: #fff;
@@ -176,18 +213,42 @@
       <h1>Кастомные NFC-метки с мемными наклейками ⚡</h1>
       <p>
         Приложи к телефону — и запусти пранк, музыку, секретную ссылку или крутой веб-прикол. 
-        Каждая метка идёт в защитном пакетике с уникальным дизайном.
+        Каждая метка идёт в защитном пакетике с уникальным дизайном[span_0](start_span)[span_0](end_span).
       </p>
     </div>
 
     <div class="product-grid">
       <div class="card">
-        <!-- Сюда можешь закинуть фотку метки, например image_6093ba.jpg -->
         <img src="image_6093ba.jpg" alt="NFC Метка Core" />
         <h3>NFC Метка 1 Core с рандомными мем-картинками</h3>
-        <p>Метка в прозрачном пакетике с мемным стикером. Зашивай любые ссылки, контакты или розыгрыши.</p>
+        <p>Метка в прозрачном пакетике с мемным стикером[span_1](start_span)[span_1](end_span). Зашивай любые ссылки, контакты или розыгрыши.</p>
         <div class="price">По договорной</div>
         <a href="https://www.avito.ru/stavropol/kollektsionirovanie/nfc_metka_1_core_s_ramdomnymi_mem_kartinkami_8546519380" target="_blank" class="btn">Купить на Авито</a>
+      </div>
+    </div>
+
+    <!-- Блок FAQ -->
+    <div class="faq-section">
+      <h2>❓ Частые вопросы (FAQ)</h2>
+      
+      <div class="faq-item">
+        <div class="faq-question">Как эта метка работает?</div>
+        <div class="faq-answer">Внутрь зашит чип NFC. Прикладываешь смартфон с включенным NFC (и разблокированным экраном) — и на нём открывается ссылка, сайт, музыка или пранк, который ты туда записал.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">Как записать свою ссылку на метку?</div>
+        <div class="faq-answer">Скачай любое бесплатное приложение для записи NFC (например, «NFC Tools» на iOS или Android), выбери пункт «Записать запись» (Add a record), вставь свою ссылку и приложи метку к телефону на пару секунд. Готово!</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">На каких телефонах работает?</div>
+        <div class="faq-answer">На всех современных смартфонах (iPhone и Android), у которых есть модуль NFC (сейчас он есть почти на каждом телефоне).</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">Как забрать заказ?</div>
+        <div class="faq-answer">Оформляем через Авито Доставку в любой город или при личной встрече. Все детали можно обсудить в чате на Авито.</div>
       </div>
     </div>
   </div>
